@@ -4,8 +4,6 @@ if [[ $1 == "help" ]]; then
   echo "Pass the music album folder name as a parameter."
   echo
 else
-  # mkdir newfiles
-
   foldernamelength=${#1}+1
   songs=()
   newsongs=()
@@ -25,7 +23,6 @@ else
 
     echo $filename
     echo "$spaces$newfilename"
-    # echo
 
     songs+=("$filename")
     newsongs+=("$newfilename")
@@ -37,8 +34,8 @@ else
       echo ">>> Okay. Changing filenames"
 
       for (( i = 0; i < ${#songs[@]}; i++ )); do
-        echo "${songs[$i]} -> ${newsongs[$i]}"
-        mv -i "$1/${songs[$i]}" "$1/${newsongs[$i]}"
+        # echo "${songs[$i]} -> ${newsongs[$i]}"
+        mv -nv "$1/${songs[$i]}" "$1/../${newsongs[$i]}" | echo $0
       done
     else
       echo "Sorry..."
