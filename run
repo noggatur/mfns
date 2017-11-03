@@ -21,6 +21,9 @@ else
 
     newfilename=${filename:deltalength}
 
+    # to Title Case
+    newfilename=$(echo $newfilename | awk -f cap.awk) # https://stackoverflow.com/questions/35006611/how-to-convert-text-following-title-case-rules-in-bash
+
     echo -e "\033[31m- $filename\033[0m"
     echo -e "\033[32m+ $spaces\033[0m\033[32m$newfilename\033[0m"
 
