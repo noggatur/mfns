@@ -36,7 +36,7 @@ else
       echo -e "\033[36mOkay. Changing filenames\033[0m"
       for (( i = 0; i < ${#songs[@]}; i++ )); do
         # echo "${songs[$i]} -> ${newsongs[$i]}"
-        mv -nv "$1/${songs[$i]}" "$1/../${newsongs[$i]}"
+        mv -n "$1/${songs[$i]}" "$1/../${newsongs[$i]}"
       done
       echo
     else
