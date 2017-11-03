@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [[ $1 == "help" ]]; then
-  echo "Pass the music album folder name as a parameter."
+  echo -e "\033[36mPass the music album folder name as a parameter.\033[0m"
   echo
 else
   foldernamelength=${#1}+1
@@ -12,33 +12,37 @@ else
     filename=${file:foldernamelength}
 
     # newfilename=$(echo $filename | sed -E 's/^[0-9\s-]+//g')
-    delta=$(echo $filename | sed -E 's/(^[0-9\s-]+).+/\1/g')
+    delta=$(echo $filename | sed -E 's/(^[0-9\.\ -]+).+/\1/g')
     deltalength=${#delta}
-    spaces=""
+    spaces="\033[40m"
     for (( i = 0; i < $deltalength; i++ )); do
       spaces=$spaces" "
     done
 
     newfilename=${filename:deltalength}
 
-    echo $filename
-    echo "$spaces$newfilename"
+    echo -e "\033[31m- $filename\033[0m"
+    echo -e "\033[32m+ $spaces\033[0m\033[32m$newfilename\033[0m"
 
     songs+=("$filename")
     newsongs+=("$newfilename")
   done
 
-  echo ">>> Is everything OK?"
+  echo
+  echo -e "\033[35m>>> Is everything OK?\033[0m"
   select option in "Yes" "No"; do
     if [[ $option == "Yes" ]]; then
-      echo ">>> Okay. Changing filenames"
-
+      echo
+      echo -e "\033[36mOkay. Changing filenames\033[0m"
       for (( i = 0; i < ${#songs[@]}; i++ )); do
         # echo "${songs[$i]} -> ${newsongs[$i]}"
-        mv -nv "$1/${songs[$i]}" "$1/../${newsongs[$i]}" | echo $0
+        mv -nv "$1/${songs[$i]}" "$1/../${newsongs[$i]}"
       done
+      echo
     else
-      echo "Sorry..."
+      echo
+      echo -e "\033[36mProbably the script needs to be improved a little bit.\033[0m"
+      echo
     fi
     break
   done
