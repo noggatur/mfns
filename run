@@ -1,9 +1,48 @@
 #!/bin/bash
 
-mkdir newfiles
+if [[ $1 == "help" ]]; then
+  echo "Pass the music album folder name as a parameter."
+  echo
+else
+  # mkdir newfiles
 
-for file in *.mp3; do
-  newfile=$(echo $file | sed -E 's/[0-9]+\ - //g')
-  # echo $file ' -> ' $newfile
-  mv "$file" "newfiles/$newfile"
-done
+  foldernamelength=${#1}+1
+  songs=()
+  newsongs=()
+
+  for file in "$1"/*.mp3; do
+    filename=${file:foldernamelength}
+
+    # newfilename=$(echo $filename | sed -E 's/^[0-9\s-]+//g')
+    delta=$(echo $filename | sed -E 's/(^[0-9\s-]+).+/\1/g')
+    deltalength=${#delta}
+    spaces=""
+    for (( i = 0; i < $deltalength; i++ )); do
+      spaces=$spaces" "
+    done
+
+    newfilename=${filename:deltalength}
+
+    echo $filename
+    echo "$spaces$newfilename"
+    # echo
+
+    songs+=("$filename")
+    newsongs+=("$newfilename")
+  done
+
+  echo ">>> Is everything OK?"
+  select option in "Yes" "No"; do
+    if [[ $option == "Yes" ]]; then
+      echo ">>> Okay. Changing filenames"
+
+      for (( i = 0; i < ${#songs[@]}; i++ )); do
+        echo "${songs[$i]} -> ${newsongs[$i]}"
+        mv -i "$1/${songs[$i]}" "$1/${newsongs[$i]}"
+      done
+    else
+      echo "Sorry..."
+    fi
+    break
+  done
+fi
