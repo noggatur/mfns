@@ -37,11 +37,11 @@ else
     if [[ $option == "Yes" ]]; then
       echo
       echo -e "\033[36mOkay. Changing filenames\033[0m"
-      newfoldername="New Filenames"
-      mkdir "$1/${newfoldername}"
+      # newfoldername="New Filenames"
+      # mkdir "$1/${newfoldername}"
       for (( i = 0; i < ${#songs[@]}; i++ )); do
         # echo "${songs[$i]} -> ${newsongs[$i]}"
-        mv -n "$1/${songs[$i]}" "$1/${newfoldername}/${newsongs[$i]}"
+        mv -n "$1/${songs[$i]}" "$1/${newsongs[$i]}"
       done
       echo
     else
