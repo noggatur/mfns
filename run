@@ -1,54 +1,92 @@
 #!/bin/bash
 
-if [[ $1 == "help" ]]; then
+isServiceable=false
+
+while getopts s option; do
+  case $option in
+    s) isServiceable=true;;
+    ?) echo "Не понимаю, о чём речь. Что ещё за $OPTARG?";;
+  esac
+done
+
+# echo $isServiceable
+# if [[ $isServiceable == true ]]; then
+#   echo "Serviceable"
+# else
+#   echo "NOT Serviceable"
+# fi
+
+if [[ $isServiceable == true ]]; then
+  currentfolder=$2
+else
+  currentfolder=$1
+fi
+# echo $currentfolder
+
+if [[ $currentfolder == "help" ]]; then
   echo -e "\033[36mPass the music album folder name as a parameter.\033[0m"
   echo
 else
-  foldernamelength=${#1}+1
+  foldernamelength=${#currentfolder}+1
   songs=()
   newsongs=()
 
-  for file in "$1"/*.mp3; do
+  for file in "$currentfolder"/*.mp3; do
     filename=${file:foldernamelength}
 
     # newfilename=$(echo $filename | sed -E 's/^[0-9\s-]+//g')
     delta=$(echo $filename | sed -E 's/(^[0-9\.\ -]+).+/\1/g')
     deltalength=${#delta}
     spaces="\033[40m"
-    for (( i = 0; i < $deltalength; i++ )); do
-      spaces=$spaces" "
-    done
+    if [[ $deltalength != 0 ]]; then
+      spaces=""
+    else
+      for (( i = 0; i < $deltalength; i++ )); do
+        spaces=$spaces" "
+      done
+    fi
 
     newfilename=${filename:deltalength}
 
     # to Title Case
     newfilename=$(echo $newfilename | awk -f cap.awk) # https://stackoverflow.com/questions/35006611/how-to-convert-text-following-title-case-rules-in-bash
 
-    echo -e "\033[31m- $filename\033[0m"
-    echo -e "\033[32m+ $spaces\033[0m\033[32m$newfilename\033[0m"
+    if [[ $newfilename == "" ]]; then
+      newfilename=$filename
+    fi
+
+    if [[ $isServiceable != true ]]; then
+      echo -e "\033[31m- $filename\033[0m"
+      echo -e "\033[32m+ $spaces\033[0m\033[32m$newfilename\033[0m"
+    fi
 
     songs+=("$filename")
     newsongs+=("$newfilename")
   done
 
-  echo
-  echo -e "\033[35m>>> Is everything OK?\033[0m"
-  select option in "Yes" "No"; do
-    if [[ $option == "Yes" ]]; then
-      echo
-      echo -e "\033[36mOkay. Changing filenames\033[0m"
-      # newfoldername="New Filenames"
-      # mkdir "$1/${newfoldername}"
-      for (( i = 0; i < ${#songs[@]}; i++ )); do
-        # echo "${songs[$i]} -> ${newsongs[$i]}"
-        mv -n "$1/${songs[$i]}" "$1/${newsongs[$i]}"
-      done
-      echo
-    else
-      echo
-      echo -e "\033[36mProbably the script needs to be improved a little bit.\033[0m"
-      echo
-    fi
-    break
+
+
+  if [[ $isServiceable == true ]]; then
+    for (( i = 0; i < ${#songs[@]}; i++ )); do
+      mv -n "$currentfolder/${songs[$i]}" "$currentfolder/${newsongs[$i]}"
+    done
+  else
+    echo
+    echo -e "\033[35m>>> Is everything OK?\033[0m"
+    select option in "Yes" "No"; do
+      if [[ $option == "Yes" ]]; then
+        echo
+        echo -e "\033[36mOkay. Changing filenames\033[0m"
+        for (( i = 0; i < ${#songs[@]}; i++ )); do
+          mv -n "$currentfolder/${songs[$i]}" "$currentfolder/${newsongs[$i]}"
+        done
+        echo
+      else
+        echo
+        echo -e "\033[36mProbably the script needs to be improved a little bit.\033[0m"
+        echo
+      fi
+      break
   done
+  fi
 fi

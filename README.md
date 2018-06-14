@@ -6,3 +6,11 @@ Just run
 ```bash
 ./run path/to/music/album/folder
 ```
+
+For creating a service in Automator
+```bash
+cd /absolute/path/to/this/script/folder/
+sh ./run -s "$1"
+say "Ready!"
+```
+
