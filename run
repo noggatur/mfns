@@ -31,7 +31,7 @@ else
   songs=()
   newsongs=()
 
-  for file in "$currentfolder"/*.mp3; do
+  for file in "$currentfolder"/*.{mp3,flac,m4a,wav,ogg,mp4,aac,aiff}; do
     filename=${file:foldernamelength}
 
     # newfilename=$(echo $filename | sed -E 's/^[0-9\s-]+//g')
